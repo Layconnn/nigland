@@ -1,5 +1,6 @@
 import os
 import random
+import subprocess
 from datetime import datetime, timedelta
 
 # --- CONFIGURATION ---
@@ -14,13 +15,17 @@ def create_commit(date_string):
         f.write(f"Commit for {date_string}\n")
     
     # Stage the file
-    os.system("git add history.txt")
-    
-    # Commit with backdated environment variables
-    # GIT_AUTHOR_DATE and GIT_COMMITTER_DATE override the current time
-    env_dates = f"GIT_AUTHOR_DATE='{date_string}' GIT_COMMITTER_DATE='{date_string}'"
-    commit_command = f"{env_dates} git commit -m 'Update project history'"
-    os.system(commit_command)
+    subprocess.run(["git", "add", "history.txt"], check=False)
+
+    # Commit with backdated environment variables in a Windows-safe way
+    env = os.environ.copy()
+    env["GIT_AUTHOR_DATE"] = date_string
+    env["GIT_COMMITTER_DATE"] = date_string
+
+    try:
+        subprocess.run(["git", "commit", "-m", "Update project history"], check=True, env=env)
+    except subprocess.CalledProcessError as e:
+        print(f"git commit failed: {e}")
 
 # Start from the past and move toward today
 start_date = datetime.now() - timedelta(days=days_back)

@@ -4,9 +4,9 @@ import subprocess
 from datetime import datetime, timedelta
 
 # --- CONFIGURATION ---
-days_back = 548         # How many days into the past to go
-commit_frequency = 0.7  # Probability of committing on any given day (0.0 to 1.0)
-max_commits_per_day = 8 # Maximum number of dummy commits per day
+days_back = 240         # How many days into the past to go
+commit_frequency = 0.85  # Probability of committing on any given day (0.0 to 1.0)
+max_commits_per_day = 10 # Maximum number of dummy commits per day
 # ---------------------
 
 def create_commit(date_string):
